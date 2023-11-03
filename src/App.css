@@ -1,0 +1,4 @@
+.invalid-input::placeholder {
+  color: red;
+  font-weight: bold;
+}
