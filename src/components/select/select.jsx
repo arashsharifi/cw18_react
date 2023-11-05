@@ -1,6 +1,6 @@
-function Select() {
+function Select({ onSelect, value }) {
   return (
-    <select>
+    <select value={value} onChange={(e) => onSelect(e.target.value)}>
       <option value="all">all</option>
       <option value="done">done</option>
       <option value="undone">undone</option>
