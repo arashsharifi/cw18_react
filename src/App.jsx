@@ -1,12 +1,32 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import "./App.css";
 import Input from "./components/input/input";
 import Select from "./components/select/select";
-import TaskCard from "./components/TaskCard/TaskCard";
+import TasksContainer from "./components/taskCards/TasksContainer";
 
 const existingTasks = JSON.parse(localStorage.getItem("tasks"));
+
+export const TasksContext = createContext();
+
+export const taskReducer = (state, action) => {
+  switch (action.type) {
+    case "ADD_TASK":
+      return [...state, action.payload];
+    case "EDIT_TASK":
+      return state.map((t) =>
+        t.id === action.payload ? { ...t, done: !t.done } : t
+      );
+    case "DELETE_TASK":
+      state.filter((t) => t.id !== action.payload);
+    default:
+      return state;
+  }
+};
+
 function App() {
-  const [tasks, setTasks] = useState(existingTasks ?? []);
+  // const [tasks, setTasks] = useState(existingTasks ?? []);
+
+  const [state, dispatch] = useReducer(taskReducer, existingTasks ?? []);
 
   const [category, setCategory] = useState("done");
 
@@ -20,17 +40,20 @@ function App() {
       done: false,
       id: Date.now(),
     };
-    setTasks((prevTasks) => [...prevTasks, newTask]);
+    // setTasks((prevTasks) => [...prevTasks, newTask]);
+    dispatch({ type: "ADD_TASK", payload: newTask });
   };
 
   const handleDelete = (id) => {
-    setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
+    // setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
+    dispatch({ type: "DELETE_TASK", payload: id });
   };
 
   const handleEdit = (id) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    );
+    // setTasks((prevTasks) =>
+    //   prevTasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+    // );
+    dispatch({ type: "EDIT_TASK", payload: id });
   };
 
   const handleSelect = (value) => {
@@ -49,25 +72,16 @@ function App() {
       : tasks;
 
   return (
-    <>
+    <TasksContext.Provider value={{ filteredTasks, handleEdit, handleDelete }}>
       <div className=" w-96 mx-auto  bg-blue-400 h-screen">
         <div className="flex gap-2 mt-10 p-4 ">
           <Input onAddTask={handleAddTask} />
           <Select onSelect={handleSelect} value={category} />
         </div>
 
-        <div className=" flex flex-col gap-5 w-full p-3">
-          {filteredTasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-            />
-          ))}
-        </div>
+        <TasksContainer />
       </div>
-    </>
+    </TasksContext.Provider>
   );
 }
 

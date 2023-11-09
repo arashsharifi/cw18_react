@@ -1,4 +1,5 @@
 import { PropTypes } from "prop-types";
+
 function TaskCard({ task, onDelete, onEdit }) {
   return (
     <div className="flex w-full gap-2  ">
