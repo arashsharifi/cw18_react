@@ -2,7 +2,7 @@ import { PropTypes } from "prop-types";
 
 function TaskCard({ task, onDelete, onEdit }) {
   return (
-    <div className="flex w-full gap-2  ">
+    <div className="flex w-full gap-2">
       <h2
         className={`bg-white p-1 flex-1 flex items-center ${
           task.done ? "line-through" : ""

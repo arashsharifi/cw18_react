@@ -31,8 +31,8 @@ function App() {
   const [category, setCategory] = useState("done");
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    localStorage.setItem("tasks", JSON.stringify(state));
+  }, [state]);
 
   const handleAddTask = (taskTitle) => {
     const newTask = {
@@ -68,7 +68,7 @@ function App() {
 
   const filteredTasks =
     category !== "all"
-      ? tasks.filter((t) => (category === "done" ? t.done : !t.done))
+      ? state.filter((t) => (category === "done" ? t.done : !t.done))
       : tasks;
 
   return (
